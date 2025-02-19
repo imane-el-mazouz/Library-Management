@@ -32,6 +32,15 @@ public class User {
     @Column(name = "role", nullable = false, length = 225)
     private Role role;
 
+    public User(Long id, String firstName, String lastName, String email, String phone, Role role) {
+        this.id = id;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.phone = phone;
+        this.role = role;
+    }
+
     public List<SimpleGrantedAuthority> getAuthorities() {
         return Collections.singletonList(new SimpleGrantedAuthority(role.name()));
     }
