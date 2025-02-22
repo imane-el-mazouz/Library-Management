@@ -55,5 +55,15 @@ public class BookService {
         return bookMapper.toDTOList(books);
     }
 
+    public String getBookAvailability(Long id) {
+        Book book = bookRepository.findById(id)
+                .orElseThrow(() -> new BookNotFoundException("Book not found"));
+
+        if (book.isAvailable()) {
+            return "Book is available for borrowing.";
+        } else {
+            return "Book is currently borrowed.";
+        }
+    }
 
 }

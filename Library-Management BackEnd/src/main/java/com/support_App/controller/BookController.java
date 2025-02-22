@@ -56,4 +56,9 @@ public class BookController {
         return ResponseEntity.ok(bookService.searchBooks(title, author, genre));
     }
 
+    @PreAuthorize("hasRole('LIBRARIAN') or hasRole('READER')")
+    @GetMapping("/{id}/availability")
+    public String checkBookAvailability(@PathVariable Long id) {
+        return bookService.getBookAvailability(id);
+    }
 }
