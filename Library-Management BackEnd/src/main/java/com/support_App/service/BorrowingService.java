@@ -32,74 +32,51 @@ public class BorrowingService {
     @Autowired
     private BorrowingMapper borrowingMapper;
 
-    /**
-     * Method for borrowing a book.
-     * @param borrowingDTO The details of the borrowing request.
-     * @return The BorrowingDTO object with the new borrowing details.
-     */
     public BorrowingDTO borrowBook(BorrowingDTO borrowingDTO) {
-        // Find book by ID, throw exception if not found
         Book book = bookRepository.findById(borrowingDTO.getBookId())
                 .orElseThrow(() -> new BookNotFoundException("Book not found"));
 
-        // Check if the book is available
         if (!book.isAvailable()) {
             throw new EntityNotFoundException("The book is not available for borrowing");
         }
 
-        // Find user by ID, throw exception if not found
         User user = userRepository.findById(borrowingDTO.getUserId())
                 .orElseThrow(() -> new EntityNotFoundException("User not found"));
 
-        // Create Borrowing record
         Borrowing borrowing = new Borrowing();
         borrowing.setBook(book);
         borrowing.setUser(user);
         borrowing.setBorrowDate(LocalDate.now().toString());
-        borrowing.setReturnDate(null);  // Set return date later when book is returned
+        borrowing.setReturnDate(null);
 
-        // Save borrowing and update the book availability
         borrowing = borrowingRepository.save(borrowing);
-        book.setAvailable(false);  // Mark the book as unavailable
+        book.setAvailable(false);
         bookRepository.save(book);
 
-        // Convert Borrowing to BorrowingDTO and return it
         return borrowingMapper.toDTO(borrowing);
     }
 
-    /**
-     * Method for returning a borrowed book.
-     * @param id The ID of the borrowing record.
-     * @return The BorrowingDTO object with updated return date.
-     */
+
     public BorrowingDTO returnBook(Long id) {
-        // Find the borrowing record by ID
         Borrowing borrowing = borrowingRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Borrowing not found"));
 
-        // Set return date and mark the book as available again
         borrowing.setReturnDate(LocalDate.now().toString());
         Book book = borrowing.getBook();
-        book.setAvailable(true);  // Mark book as available again
+        book.setAvailable(true);
         bookRepository.save(book);
-
-        // Save the updated borrowing record
         borrowing = borrowingRepository.save(borrowing);
-
-        // Return the updated borrowing details as BorrowingDTO
         return borrowingMapper.toDTO(borrowing);
     }
 
-    /**
-     * Method to get the borrowing history of a user.
-     * @param userId The ID of the user.
-     * @return List of BorrowingDTO with all borrowings of the user.
-     */
     public List<BorrowingDTO> getBorrowingHistory(Long userId) {
-        // Find borrowings by user ID
         List<Borrowing> borrowings = borrowingRepository.findByUserId(userId);
-
-        // Map to BorrowingDTO and return
         return borrowingMapper.toDTOList(borrowings);
     }
+
+    public List<BorrowingDTO> getAllBorrowings() {
+        List<Borrowing> borrowings = borrowingRepository.findAll();
+        return borrowingMapper.toDTOList(borrowings);
+    }
+
 }

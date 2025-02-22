@@ -4,6 +4,7 @@ import com.support_App.dto.BorrowingDTO;
 import com.support_App.service.BorrowingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -15,33 +16,27 @@ public class BorrowingController {
     @Autowired
     private BorrowingService borrowingService;
 
-    /**
-     * Endpoint to borrow a book.
-     * @param borrowingDTO The details of the borrowing request.
-     * @return The BorrowingDTO object with the new borrowing details.
-     */
+    @PreAuthorize("hasRole('READER')")
     @PostMapping
     public ResponseEntity<BorrowingDTO> borrowBook(@RequestBody BorrowingDTO borrowingDTO) {
         return ResponseEntity.ok(borrowingService.borrowBook(borrowingDTO));
     }
 
-    /**
-     * Endpoint to return a borrowed book.
-     * @param id The ID of the borrowing record.
-     * @return The updated BorrowingDTO with the return date.
-     */
+    @PreAuthorize("hasRole('READER')")
     @PutMapping("/return/{id}")
     public ResponseEntity<BorrowingDTO> returnBook(@PathVariable Long id) {
         return ResponseEntity.ok(borrowingService.returnBook(id));
     }
 
-    /**
-     * Endpoint to view the borrowing history of a user.
-     * @param userId The ID of the user.
-     * @return A list of BorrowingDTO objects containing the borrowing history.
-     */
+    @PreAuthorize("hasRole('READER')")
     @GetMapping("/history/{userId}")
     public ResponseEntity<List<BorrowingDTO>> getBorrowingHistory(@PathVariable Long userId) {
         return ResponseEntity.ok(borrowingService.getBorrowingHistory(userId));
+    }
+
+    @PreAuthorize("hasRole('LIBRARIAN')")
+    @GetMapping
+    public ResponseEntity<List<BorrowingDTO>> getAllBorrowings() {
+        return ResponseEntity.ok(borrowingService.getAllBorrowings());
     }
 }

@@ -53,7 +53,7 @@ public JwtResponseDTO signUp(User userRequest) {
         throw new RuntimeException("Email is already taken.");
     }
     if (userRequest.getRole() == null) {
-        userRequest.setRole(Role.LIBRARIAN);
+        userRequest.setRole(Role.READER);
     }
     userRequest.setPassword(passwordEncoder.encode(userRequest.getPassword()));
     User savedUser = userRepository.save(userRequest);
