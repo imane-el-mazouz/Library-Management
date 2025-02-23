@@ -120,7 +120,9 @@ const BooksList: React.FC = () => {
     };
 
     const getBorrowingForBook = (bookId: number): Borrowing | undefined => {
-        return borrowings.find((b) => b.bookId === bookId);
+        const borrowing = borrowings.find((b) => b.bookId === bookId);
+        console.log(`Recherche d'emprunt pour le livre ${bookId} :`, borrowing); // Ajoutez cette ligne
+        return borrowing;
     };
 
     if (loading) {
@@ -168,9 +170,10 @@ const BooksList: React.FC = () => {
                                         Emprunter
                                     </button>
                                 )}
-                            {borrowing && (
+                                {borrowing && (
+    console.log("Borrowing trouvé :", borrowing), // Ajoutez cette ligne pour déboguer
     <button
-        className="bg-pink-500 text-white px-3 py-1 rounded" // Changé en rose
+        className="bg-pink-500 text-white px-3 py-1 rounded"
         onClick={() => handleReturn(borrowing.id)}
     >
         Retourner
