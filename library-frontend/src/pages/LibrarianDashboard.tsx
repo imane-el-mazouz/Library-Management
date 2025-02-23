@@ -43,7 +43,15 @@ const LibrarianDashboard: React.FC = () => {
 
     const fetchBooks = async () => {
         try {
-            const res = await axios.get<Book[]>("http://localhost:8088/api/books");
+            // Récupérer le token stocké lors de la connexion
+            const token = localStorage.getItem('accessToken');
+            
+            // Ajouter le token dans les headers de la requête
+            const res = await axios.get("http://localhost:8088/api/books", {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
             setBooks(res.data);
         } catch (error) {
             console.error("Erreur lors de la récupération des livres:", error);
@@ -76,14 +84,18 @@ const LibrarianDashboard: React.FC = () => {
 
     const addBook = async () => {
         try {
-            await axios.post("http://localhost:8088/api/books", newBook);
+            const token = localStorage.getItem('accessToken');
+            await axios.post("http://localhost:8088/api/books", newBook, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
             setNewBook({ title: "", author: "", genre: "", available: true });
             fetchBooks();
         } catch (error) {
             console.error("Erreur lors de l'ajout du livre:", error);
         }
     };
-
     const updateBook = async () => {
         if (!editingBook) return;
         try {
