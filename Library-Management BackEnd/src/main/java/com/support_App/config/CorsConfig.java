@@ -34,14 +34,11 @@ public class CorsConfig implements WebMvcConfigurer {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration config = new CorsConfiguration();
 
-        // Allow all origins in development
         config.addAllowedOrigin("http://localhost:3000");
         config.addAllowedOrigin("http://127.0.0.1:3000");
 
-        // Allow cookies and authentication headers
         config.setAllowCredentials(true);
 
-        // Allow all common HTTP methods
         config.addAllowedMethod("GET");
         config.addAllowedMethod("POST");
         config.addAllowedMethod("PUT");
@@ -49,13 +46,10 @@ public class CorsConfig implements WebMvcConfigurer {
         config.addAllowedMethod("PATCH");
         config.addAllowedMethod("OPTIONS");
 
-        // Allow all headers
         config.addAllowedHeader("*");
 
-        // Expose the Authorization header
         config.addExposedHeader("Authorization");
 
-        // How long the browser should cache the CORS response
         config.setMaxAge(3600L);
 
         source.registerCorsConfiguration("/**", config);

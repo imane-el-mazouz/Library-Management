@@ -27,17 +27,13 @@ const Login: React.FC = () => {
             const { accessToken, user } = response.data;
             
             if (accessToken && user) {
-                // Store the token in localStorage or your preferred storage method
                 localStorage.setItem('accessToken', accessToken);
                 
-                // Get the role from the user object
                 const userRole = user.role;
                 console.log("Connexion réussie, rôle de l'utilisateur :", userRole);
 
-                // Store user info if needed
                 localStorage.setItem('user', JSON.stringify(user));
 
-                // Navigate based on role
                 if (userRole === "READER") {
                     navigate("/bookslist");
                 } else if (userRole === "LIBRARIAN") {

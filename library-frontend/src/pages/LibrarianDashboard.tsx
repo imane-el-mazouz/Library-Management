@@ -43,10 +43,8 @@ const LibrarianDashboard: React.FC = () => {
 
     const fetchBooks = async () => {
         try {
-            // Récupérer le token stocké lors de la connexion
             const token = localStorage.getItem('accessToken');
             
-            // Ajouter le token dans les headers de la requête
             const res = await axios.get("http://localhost:8088/api/books", {
                 headers: {
                     'Authorization': `Bearer ${token}`
@@ -60,7 +58,12 @@ const LibrarianDashboard: React.FC = () => {
 
     const fetchUsers = async () => {
         try {
-            const res = await axios.get<User[]>("http://localhost:8088/api/users");
+            const token = localStorage.getItem('accessToken');
+            const res = await axios.get<User[]>("http://localhost:8088/api/users", {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
             setUsers(res.data);
         } catch (error) {
             console.error("Erreur lors de la récupération des utilisateurs:", error);
@@ -69,13 +72,17 @@ const LibrarianDashboard: React.FC = () => {
 
     const fetchBorrowings = async () => {
         try {
-            const res = await axios.get<Borrowing[]>("http://localhost:8088/api/borrowings");
+            const token = localStorage.getItem('accessToken');
+            const res = await axios.get<Borrowing[]>("http://localhost:8088/api/borrowings", {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
             setBorrowings(res.data);
         } catch (error) {
             console.error("Erreur lors de la récupération des emprunts:", error);
         }
     };
-
     useEffect(() => {
         if (activeTab === "books") fetchBooks();
         if (activeTab === "users") fetchUsers();
@@ -118,24 +125,33 @@ const LibrarianDashboard: React.FC = () => {
 
     const addUser = async () => {
         try {
-            // Pour créer un lecteur, on utilise l'endpoint dédié
-            await axios.post("http://localhost:8088/api/users/readers", newUser);
+            const token = localStorage.getItem('accessToken');
+            await axios.post("http://localhost:8088/api/users/readers", newUser, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
             setNewUser({ username: "" });
             fetchUsers();
         } catch (error) {
             console.error("Erreur lors de l'ajout de l'utilisateur:", error);
         }
     };
+    
 
     const deleteUser = async (id: number) => {
         try {
-            await axios.delete(`http://localhost:8088/api/users/${id}`);
+            const token = localStorage.getItem('accessToken');
+            await axios.delete(`http://localhost:8088/api/users/${id}`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
             fetchUsers();
         } catch (error) {
             console.error("Erreur lors de la suppression de l'utilisateur:", error);
         }
     };
-
     return (
         <div className="p-4">
             <h1 className="text-3xl font-bold mb-4">Dashboard Bibliothécaire</h1>

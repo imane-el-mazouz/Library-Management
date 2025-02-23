@@ -13,61 +13,101 @@ interface Borrowing {
     id: number;
     bookId: number;
     userId: number;
-    borrowDate: Date ;
-    returnDate: Date ;
+    borrowDate: Date;
+    returnDate: Date;
 }
 
-const userId = 1;
+const userId = 3;
 
 const BooksList: React.FC = () => {
     const [books, setBooks] = useState<Book[]>([]);
     const [borrowings, setBorrowings] = useState<Borrowing[]>([]);
+    const [loading, setLoading] = useState<boolean>(true);
+    const [error, setError] = useState<string | null>(null);
 
     const fetchBooks = async () => {
+        const token = localStorage.getItem('accessToken');
         try {
-            const response = await axios.get<Book[]>("http://localhost:8088/api/books");
+            const response = await axios.get<Book[]>("http://localhost:8088/api/books", {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
             setBooks(response.data);
         } catch (error) {
             console.error("Erreur lors de la récupération des livres :", error);
+            setError("Erreur lors de la récupération des livres.");
+        } finally {
+            setLoading(false);
         }
     };
 
     const fetchBorrowingHistory = async () => {
+        const token = localStorage.getItem('accessToken');
         try {
             const response = await axios.get<Borrowing[]>(
-                `http://localhost:8088/api/borrowings/history/${userId}`
+                `http://localhost:8088/api/borrowings/history/${userId}`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                }
             );
             setBorrowings(response.data);
         } catch (error) {
             console.error("Erreur lors de la récupération de l'historique :", error);
+            setError("Erreur lors de la récupération de l'historique.");
         }
     };
 
     useEffect(() => {
-        fetchBooks();
-        fetchBorrowingHistory();
+        const fetchData = async () => {
+            await fetchBooks();
+            await fetchBorrowingHistory();
+        };
+        fetchData();
     }, []);
 
-    // Emprunter un livre
     const handleBorrow = async (bookId: number) => {
+        const token = localStorage.getItem('accessToken');
+        if (!token) {
+            console.error("Aucun token d'authentification trouvé.");
+            setError("Aucun token d'authentification trouvé.");
+            return;
+        }
+    
         try {
-            const response = await axios.post("http://localhost:8088/api/borrowings", { bookId, userId });
+            const response = await axios.post(
+                "http://localhost:8088/api/borrowings",
+                { bookId, userId },
+                {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                }
+            );
             console.log("Livre emprunté :", response.data);
-            fetchBooks();
-            fetchBorrowingHistory();
+            await fetchBooks();
+            await fetchBorrowingHistory();
         } catch (error) {
             console.error("Erreur lors de l'emprunt :", error);
+            setError("Erreur lors de l'emprunt.");
         }
     };
 
     const handleReturn = async (borrowingId: number) => {
+        const token = localStorage.getItem('accessToken');
         try {
-            const response = await axios.put(`http://localhost:8088/api/borrowings/return/${borrowingId}`);
+            const response = await axios.put(`http://localhost:8088/api/borrowings/return/${borrowingId}`, {}, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
             console.log("Livre retourné :", response.data);
             await fetchBooks();
             await fetchBorrowingHistory();
         } catch (error) {
             console.error("Erreur lors du retour :", error);
+            setError("Erreur lors du retour.");
         }
     };
 
@@ -82,6 +122,14 @@ const BooksList: React.FC = () => {
     const getBorrowingForBook = (bookId: number): Borrowing | undefined => {
         return borrowings.find((b) => b.bookId === bookId);
     };
+
+    if (loading) {
+        return <div>Chargement en cours...</div>;
+    }
+
+    if (error) {
+        return <div className="text-red-500">{error}</div>;
+    }
 
     return (
         <div className="p-4">
@@ -120,14 +168,14 @@ const BooksList: React.FC = () => {
                                         Emprunter
                                     </button>
                                 )}
-                                {borrowing && (
-                                    <button
-                                        className="bg-red-500 text-white px-3 py-1 rounded"
-                                        onClick={() => handleReturn(borrowing.id)}
-                                    >
-                                        Retourner
-                                    </button>
-                                )}
+                            {borrowing && (
+    <button
+        className="bg-pink-500 text-white px-3 py-1 rounded" // Changé en rose
+        onClick={() => handleReturn(borrowing.id)}
+    >
+        Retourner
+    </button>
+)}
                             </td>
                         </tr>
                     );
