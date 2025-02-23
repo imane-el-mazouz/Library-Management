@@ -24,11 +24,20 @@ const Login: React.FC = () => {
 
             console.log("Réponse de l'API :", response);
            
-    
-            if (response.data && response.data.role) {
-                console.log("Connexion réussie, rôle de l'utilisateur :", response.data.role);
-                const userRole = response.data.role;
-    
+            const { accessToken, user } = response.data;
+            
+            if (accessToken && user) {
+                // Store the token in localStorage or your preferred storage method
+                localStorage.setItem('accessToken', accessToken);
+                
+                // Get the role from the user object
+                const userRole = user.role;
+                console.log("Connexion réussie, rôle de l'utilisateur :", userRole);
+
+                // Store user info if needed
+                localStorage.setItem('user', JSON.stringify(user));
+
+                // Navigate based on role
                 if (userRole === "READER") {
                     navigate("/bookslist");
                 } else if (userRole === "LIBRARIAN") {
@@ -38,7 +47,7 @@ const Login: React.FC = () => {
                 }
             } else {
                 console.error("Réponse de l'API invalide :", response.data);
-                setError("Réponse du serveur invalide.");
+                setError("Informations d'utilisateur manquantes dans la réponse.");
             }
         } catch (err: any) {
             console.error("Erreur lors de la connexion :", err);
@@ -87,14 +96,14 @@ const Login: React.FC = () => {
                 </div>
                 <button
                     type="submit"
-                    className="w-full bg-blue-500 text-white p-2 rounded"
+                    className="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
                     disabled={isLoading}
                 >
                     {isLoading ? "Connexion en cours..." : "Se connecter"}
                 </button>
-                <p className="mt-4 text-center">
+                <p className="mt-4 text-center text-gray-600">
                     Pas encore de compte ?{" "}
-                    <Link to="/signup" className="text-blue-500 underline">
+                    <Link to="/signup" className="text-blue-500 hover:text-blue-600 underline">
                         S'inscrire
                     </Link>
                 </p>
