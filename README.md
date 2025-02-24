@@ -1,95 +1,86 @@
-Library Management System
+# Library Management System
 
-Description
+## Description
 
-Le projet Library Management System est une application web permettant de gérer une bibliothèque en ligne. Il est développé avec Spring Boot pour le backend et React.js pour le frontend.
+Le projet **Library Management System** est une application web permettant de gérer une bibliothèque en ligne. Il est développé avec **Spring Boot** pour le backend et **React.js** pour le frontend.
 
-Technologies Utilisées
+## Technologies Utilisées
 
-Backend (Spring Boot)
+### Backend (Spring Boot)
+- Spring Boot
+- Spring Data JPA
+- Spring Security (si authentification requise)
+- Hibernate
+- MySQL (ou autre base de données relationnelle)
+- Swagger (documentation API)
 
-Spring Boot
+### Frontend (React)
+- React.js
+- Redux (si nécessaire)
+- Axios (pour les appels API)
+- Bootstrap / Material UI (pour le design)
 
-Spring Data JPA
+## Fonctionnalités
 
-Spring Security (si authentification requise)
+### Gestion des livres
+- Ajout, modification, suppression et consultation des livres.
 
-Hibernate
+### Gestion des utilisateurs
+- Inscription, connexion et gestion des profils.
 
-MySQL (ou autre base de données relationnelle)
+### Prêt de livres
+- Gestion des emprunts et des retours.
 
-Swagger (documentation API)
+### Administration
+- Interface pour la gestion avancée des utilisateurs et des livres.
 
-Frontend (React)
+## Installation & Exécution
 
-React.js
+### 1. Cloner le projet
 
-Redux (si nécessaire)
-
-Axios (pour les appels API)
-
-Bootstrap / Material UI (pour le design)
-
-Fonctionnalités
-
-Gestion des livres
-
-Ajout, modification, suppression et consultation des livres.
-
-Gestion des utilisateurs
-
-Inscription, connexion et gestion des profils.
-
-Prêt de livres
-
-Gestion des emprunts et des retours.
-
-Administration
-
-Interface pour la gestion avancée des utilisateurs et des livres.
-
-Installation & Exécution
-
-1. Cloner le projet
-
+```sh
  git clone https://github.com/imane-el-mazouz/Library-Management.git
  cd Library-Management
+```
 
-2. Backend (Spring Boot)
+### 2. Backend (Spring Boot)
 
-Prérequis
+#### Prérequis
+- Java 17+
+- Maven
+- MySQL (ou autre base de données configurée)
 
-Java 17+
+#### Configuration
+Modifiez le fichier `application.properties` dans `src/main/resources/` :
 
-Maven
-
-MySQL (ou autre base de données configurée)
-
-Configuration
-
-Modifiez le fichier application.properties dans src/main/resources/ :
-
+```properties
 spring.datasource.url=jdbc:mysql://localhost:3306/library_db
 spring.datasource.username=root
 spring.datasource.password=yourpassword
+```
 
-Exécution
+#### Exécution
 
+```sh
 mvn spring-boot:run
+```
 
-3. Frontend (React)
+### 3. Frontend (React)
 
-Prérequis
+#### Prérequis
+- Node.js & npm
 
-Node.js & npm
+#### Installation des dépendances
 
-Installation des dépendances
-
+```sh
 cd frontend
 npm install
+```
 
-Démarrage de l’application
+#### Démarrage de l’application
 
+```sh
 npm start
+```
 
-L’application sera disponible sur http://localhost:3000
+L’application sera disponible sur [http://localhost:3000](http://localhost:3000).
